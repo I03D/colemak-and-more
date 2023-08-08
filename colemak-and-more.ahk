@@ -1,9 +1,14 @@
 ; Colemak Mod-DH mapping for ANSI boards
 
+#SingleInstance Force
+
 layout := "en_col"
 alttab := "none"
+
 mouseless := False
-delay := 15
+xm := 0
+ym := 0
+speed := 15
 
 Lalt::return
 Ralt::return
@@ -15,6 +20,14 @@ SC035::
 	} else {
 		Send "{SC035}"
 	}
+}
+
+MoveM() {
+	global xm
+	global ym
+	global speed
+
+	MouseMove(xm*speed, ym*speed, , "R")
 }
 
 #HotIf (GetKeyState("Lalt","p") || GetKeyState("Ralt","p"))
@@ -50,6 +63,9 @@ SC033::
 {
 	global mouseless
 	mouseless := !mouseless
+	if mouseless {
+		SetTimer MoveM, 16
+	}
 }
 
 SC016::Left
@@ -138,58 +154,21 @@ SC024::
 	global alttab
 	global layout
 	global mouseless
-	global delay
 
-	if mouseless {
-		time := delay
-		if GetKeyState("l","p") {
-			while GetKeyState("j","p") {
-				check_delay()
-				MouseMove(-1,-1,100,"R")
-				time := time - 1
-				if (time == 0) {
-					MouseMove(1,0,100,"R")
-					Sleep 1
-					time := delay
-				}
+	if not mouseless {
+		if (alttab == "half") {
+			Send "{Ralt Down}{tab}"
+			alttab := "enabled"
+		} else if (alttab == "enabled") {
+			Send "{RShift Down}{tab}{RShift Up}"
+		} else if (alttab == "none") {
+			if (layout == "en") {
+				Send "j"
+			} else if (layout == "en_col") {
+				Send "n"
+			} else {
+				Send "о"
 			}
-		} else if GetKeyState("k","p") {
-			while GetKeyState("j","p") {
-				check_delay()
-				MouseMove(-1,1,100,"R")
-				time := time - 1
-				if (time == 0) {
-					MouseMove(1,0,100,"R")
-					Sleep 1
-					time := delay
-				}
-			}
-		} else {
-			while GetKeyState("j","p") {
-				check_delay()
-				MouseMove(-1,0,100,"R")
-				time := time - 1
-				if (time == 0) {
-					MouseMove(1,0,100,"R")
-					Sleep 1
-					time := delay
-				}
-			}
-		}
-
-			
-	} else if (alttab == "half") {
-		Send "{Ralt Down}{tab}"
-		alttab := "enabled"
-	} else if (alttab == "enabled") {
-		Send "{RShift Down}{tab}{RShift Up}"
-	} else if (alttab == "none") {
-		if (layout == "en") {
-			Send "j"
-		} else if (layout == "en_col") {
-			Send "n"
-		} else {
-			Send "о"
 		}
 	}
 }
@@ -199,150 +178,128 @@ SC027::{
 	global layout
 	global mouseless
 
-	if mouseless {
-		time := delay
-		if GetKeyState("l","p") {
-			while GetKeyState(";","p") {
-				check_delay()
-				MouseMove(1,-1,100,"R")
-				time := time - 1
-				if (time == 0) {
-					MouseMove(-1,0,100,"R")
-					Sleep 1
-					time := delay
-				}
+	if not mouseless {
+		if (alttab == "half") {
+			Send "{Ralt Down}{tab}"
+			alttab := "enabled"
+		} else if (alttab == "none") {
+			if (layout == "en") {
+				Send ";"
+			} else if (layout == "en_col") {
+				Send "o"
+			} else {
+				Send "ж"
 			}
-		} else if GetKeyState("k","p") {
-			while GetKeyState(";","p") {
-				check_delay()
-				MouseMove(1,1,100,"R")
-				time := time - 1
-				if (time == 0) {
-					MouseMove(-1,0,100,"R")
-					Sleep 1
-					time := delay
-				}
-			}
-		} else {
-			while GetKeyState(";","p") {
-				check_delay()
-				MouseMove(1,0,100,"R")
-				time := time - 1
-				if (time == 0) {
-					MouseMove(-1,0,100,"R")
-					Sleep 1
-					time := delay
-				}
-			}
-		}
-	} else if (alttab == "half") {
-		Send "{Ralt Down}{tab}"
-		alttab := "enabled"
-	} else if (alttab == "none") {
-		if (layout == "en") {
-			Send ";"
-		} else if (layout == "en_col") {
-			Send "o"
-		} else {
-			Send "ж"
-		}
-	} else if (alttab == "enabled") {
-		Send "{tab}"
-	}
-}
-
-SC025::{
-	global mouseless
-
-	if mouseless {
-		time := delay
-		if GetKeyState("j","p") {
-			while GetKeyState("k","p") {
-				check_delay()
-				MouseMove(-1,1,100,"R")
-				time := time - 1
-				if (time == 0) {
-					MouseMove(0,-1,100,"R")
-					Sleep 1
-					time := delay
-				}
-			}
-		} else if GetKeyState(";","p") {
-			while GetKeyState("k","p") {
-				check_delay()
-				MouseMove(1,1,100,"R")
-				time := time - 1
-				if (time == 0) {
-					MouseMove(0,-1,100,"R")
-					Sleep 1
-					time := delay
-				}
-			}
-		} else {
-			while GetKeyState("k","p") {
-				check_delay()
-				MouseMove(0,1,100,"R")
-				time := time - 1
-				if (time == 0) {
-					MouseMove(0,-1,100,"R")
-					Sleep 1
-					time := delay
-				}
-			}
+		} else if (alttab == "enabled") {
+			Send "{tab}"
 		}
 	}
 }
+;
+;SC025::{
+;	global alttab
+;	global layout
+;	global mouseless
+;	global ym
+;
+;	ym := 1
+;
+;	if not mouseless {
+;		if (layout == "en") {
+;			Send "k"
+;		} else if (layout == "en_col") {
+;			Send "e"
+;		} else {
+;			Send "л"
+;		}
+;	}
+;}
+;
+;SC026::{
+;	global alttab
+;	global layout
+;	global mouseless
+;	global ym
+;
+;	ym := -1
+;
+;	if not mouseless {
+;		if (layout == "en") {
+;			Send "l"
+;		} else if (layout == "en_col") {
+;			Send "i"
+;		} else {
+;			Send "д"
+;		}
+;	}
+;}
 
-SC026::{
-	global mouseless
-
+SC01E::
+{
 	if mouseless {
-		time := delay
-		if GetKeyState("j","p") {
-			while GetKeyState("l","p") {
-				check_delay()
-				MouseMove(-1,-1,100,"R")
-				time := time - 1
-				if (time == 0) {
-					MouseMove(0,1,100,"R")
-					Sleep 1
-					time := delay
-				}
-			}
-		} else if GetKeyState(";","p") {
-			while GetKeyState("l","p") {
-				check_delay()
-				MouseMove(1,-1,100,"R")
-				time := time - 1
-				if (time == 0) {
-					MouseMove(0,1,100,"R")
-					Sleep 1
-					time := delay
-				}
-			}
-		} else {
-			while GetKeyState("l","p") {
-				check_delay()
-				MouseMove(0,-1,100,"R")
-				time := time - 1
-				if (time == 0) {
-					MouseMove(0,1,100,"R")
-					Sleep 1
-					time := delay
-				}
-			}
-		}
+		global speed
+		speed := 5
 	} else {
-		if (layout == "en") {
-			Send "l"
-		} else if (layout == "en_col") {
-			Send "i"
-		} else {
-			Send "д"
-		}
+		Send "a"
 	}
 }
 
+SC01E Up::
+{
+	global speed
+	speed := 15
+}
+
+#HotIf (mouseless)
+
+SC024::
+SC025::
+SC026::
+SC027::
+SC024 Up::
+SC025 Up::
+SC026 Up::
+SC027 Up::
+{
+	global xm
+	global ym
+	global speed
+
+	xm := 0
+	ym := 0
+
+	If GetKeyState("j","p") && !GetKeyState(";","p") {
+		xm := -1
+		jk := True
+	} else {
+		jk := False
+	}
+	
+	If GetKeyState(";","p") && !GetKeyState("j","p") {
+		xm := 1
+		sk := True
+	} else {
+		sk := False
+	}
+	
+	If GetKeyState("l","p") && !GetKeyState("k","p") {
+		ym := -1
+		lk := True
+	} else {
+		lk := False
+	}
+	
+	If GetKeyState("k","p") && !GetKeyState("l","p") {
+		ym := 1
+		kk := True
+	} else {
+		kk := False
+	}
+}
+
+#HotIf
+
+; Использовать AltTab и ShiftAltTab в будущем. (/docs/v2/Hotkeys.htm#alttab)
 LWin Up::{
 	global alttab
 	global layout
@@ -355,6 +312,7 @@ LWin Up::{
 	} else {
 		Send "{LWin}"
 	}
+
 	alttab := "none"
 }
 
