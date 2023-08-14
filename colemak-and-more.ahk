@@ -1,5 +1,3 @@
-; Colemak Mod-DH mapping for ANSI boards
-
 #SingleInstance Force
 
 layout := "en_col"
@@ -13,14 +11,16 @@ speed := 25
 
 LAlt::return
 RAlt::return
-!Space::
+
+!SC039::
 {
 	MsgBox("test")
 	global altmode
 	altmode := True
 	Send "{LAlt Down}"
 }
-!Space Up::
+
+!SC039 Up::
 {
 	MsgBox("test")
 	global altmode
@@ -28,9 +28,14 @@ RAlt::return
 	Send "{LAlt Up}"
 }
 
-#HotIf (altmode)
-Space::Return
-#HotIf
+*SC039::
+{
+	If altmode {
+		Return
+	} else If !mouseless {
+		Send "{SC039}"
+	}
+}
 
 ;SC035::
 ;{
@@ -49,172 +54,447 @@ MoveM() {
 	MouseMove(xm*speed, ym*speed, , "R")
 }
 
-#HotIf (GetKeyState("Lalt","p") || GetKeyState("Ralt","p"))
-SC035::Run "cmd"
-SC02C::Send "{Volume_Down}"
-SC02D::Send "{Volume_Up}"
-SC02E::SoundSetVolume 12
-SC01F::
+*SC035::
 {
-	MsgBox("Close / Press Ok to reload...")
-	Reload
+	If (GetKeyState("Lalt","p") || GetKeyState("Ralt","p")) {
+		Run "cmd"
+	} else If (GetKeyState("LWin","p")||GetKeyState("RWin","p")) {
+		Run "explorer"
+	} Else If !mouseless
+	{
+		Send "{blind}{SC035}"
+	}
+}
+*SC02C::{
+	If (GetKeyState("Lalt","p") || GetKeyState("Ralt","p")) {
+		Send "{Volume_Down}"
+	} Else If !mouseless
+	{
+		If (layout == "en_col") {
+			Send "{blind}x"
+		} else {
+			Send "{blind}{z}"
+		}
+
+	}
+}
+*SC02D::{
+	If (GetKeyState("Lalt","p") || GetKeyState("Ralt","p")) {
+		Send "{Volume_Up}"
+	} Else If !mouseless
+	{
+		If (layout == "en_col") {
+			Send "{blind}c"
+		} else {
+			Send "{blind}{x}"
+		}
+
+	}
+}
+*SC02E::{
+	If (GetKeyState("Lalt","p") || GetKeyState("Ralt","p")) {
+		SoundSetVolume 12
+	} Else If !mouseless
+	{
+		If (layout == "en_col") {
+			Send "{blind}d"
+		} else {
+			Send "{blind}{c}"
+		}
+
+	}
+}
+*SC01F::{
+	If (GetKeyState("Lalt","p") || GetKeyState("Ralt","p")) {
+		MsgBox("Close / Press Ok to reload...")
+		Reload
+	} else If (mouseless) && !(GetKeyState("Lalt","p") || GetKeyState("Ralt","p")) {
+		global mouseless
+		if mouseless {
+			mouseless := false
+		}
+	} else If !mouseless
+	{
+		If (layout == "en_col") {
+			Send "{blind}r"
+		} else {
+			Send "{blind}{s}"
+		}
+
+	}
 }
 
-'::enter
-SC025::Send "{Lalt Down}{F4}{Lalt Up}"
+*SC028::{
+	If (GetKeyState("Lalt","p") || GetKeyState("Ralt","p")) {
+		Send "{blind}{Enter}"
+	} Else If !mouseless
+	{
+		Send "{blind}{SC028}"
+	}
+}
+*SC025::{
+	If (GetKeyState("Lalt","p") || GetKeyState("Ralt","p")) {
+		Send "{Lalt Down}{F4}{Lalt Up}"
+	} Else If !mouseless
+	{
+		If (layout == "en_col") {
+			Send "{blind}e"
+		} else {
+			Send "{blind}{k}"
+		}
 
-SC010::^Del
-SC013::^SC00E
-SC011::Send "{Delete}"
-SC012::Send "{Backspace}"
+	} Else If !(GetKeyState("Lalt","p") || GetKeyState("Ralt","p")) {
+		global ym
 
-SC031::DllCall("User32\LockWorkStation")
+		ym := 1
+	}
+}
+*SC025 Up::
+{
+	global ym
+	If ym == 1 {
+		ym := 0
+	}
+}
+
+*SC010::{
+	If (GetKeyState("Lalt","p") || GetKeyState("Ralt","p")) {
+		Send "{LControl Down}{Del}{LControl Up}"
+	} Else If !mouseless
+	{
+		Send "{blind}{q}"
+	}
+}
+*SC013::{
+	If (GetKeyState("Lalt","p") || GetKeyState("Ralt","p")) {
+		Send "{LControl Down}{Bs}{LControl Up}"
+	} Else If !mouseless
+	{
+		If (layout == "en_col") {
+			Send "{blind}p"
+		} else {
+			Send "{blind}{r}"
+		}
+
+	}
+}
+*SC011::
+{
+	If (GetKeyState("Lalt","p") || GetKeyState("Ralt","p")) {
+		Send "{Delete}"
+	} Else If (mouseless) {
+		While GetKeyState("w","p") {
+			click "WU"	
+			Sleep(50)
+		}
+	} Else If !mouseless
+	{
+		Send "{blind}{w}"
+	}
+}
+
+*SC031::{
+	If (GetKeyState("Lalt","p") || GetKeyState("Ralt","p")) {
+		DllCall("User32\LockWorkStation")
+	} Else If !mouseless
+	{
+		If (layout == "en_col") {
+			Send "{blind}k"
+		} else {
+			Send "{blind}{n}"
+		}
+
+	}
+}
 
 ;#SC020::Send "{Lwin Down}d{Lwin Up}"
 
 ; Скрипт предполагает наличие ярлыка Chrome - chrome.exe (chrome.exe.lnk)
-SC032::Run "browse.py"
+*SC032::{
+	If (GetKeyState("Lalt","p") || GetKeyState("Ralt","p")) {
+		Run "browse.py"
+	} Else If !mouseless {
+		If (layout == "en_col") {
+			Send "{blind}h"
+		} else {
+			Send "{blind}{m}"
+		}
 
-8::home
--::end
-9::pgDn
-0::pgUp
-
-SC033::
-{
-	global mouseless
-	mouseless := !mouseless
-	if mouseless {
-		SetTimer MoveM, 16
 	}
 }
 
-SC016::Left
-SC017::Down
-SC018::Up
-SC019::Right
+*SC009::{
+	If (GetKeyState("Lalt","p") || GetKeyState("Ralt","p")) {
+		Send "{home}"
+	} else {
+		Send "{blind}{SC009}"
+	}
+}
+*SC00C::{
+	If (GetKeyState("Lalt","p") || GetKeyState("Ralt","p")) {
+		Send "{end}"
+	} else {
+		Send "{blind}{SC00C}"
+	}
+}
+*SC00A::{
+	If (GetKeyState("Lalt","p") || GetKeyState("Ralt","p")) {
+		Send "{blind}{pgDn}"
+	} else {
+		Send "{blind}{SC00A}"
+	}
+}
+*SC00B::{
+	If (GetKeyState("Lalt","p") || GetKeyState("Ralt","p")) {
+		Send "{blind}{pgUp}"
+	} else {
+		Send "{blind}{SC00B}"
+	}
+}
 
-SC034::en_layout()
-SC026::en_col_layout()
-SC027::rus_layout()
+*SC033::
+{
+	If (GetKeyState("Lalt","p") || GetKeyState("Ralt","p")) {
+		global mouseless
+		mouseless := !mouseless
+		if mouseless {
+			SetTimer MoveM, 16
+		}
+	} Else If !mouseless
+	{
+		Send "{blind}{SC33}"
+	}
+}
+
+*SC016::{
+	If (GetKeyState("Lalt","p") || GetKeyState("Ralt","p")) {
+		Send "{blind}{Left}"
+	} Else If !mouseless
+	{
+		If (layout == "en_col") {
+			Send "{blind}l"
+		} else {
+			Send "{blind}{u}"
+		}
+	}
+}
+*SC017::{
+	If (GetKeyState("Lalt","p") || GetKeyState("Ralt","p")) {
+		Send "{blind}{Down}"
+	} Else If !mouseless
+	{
+		If (layout == "en_col") {
+			Send "{blind}u"
+		} else {
+			Send "{blind}{i}"
+		}
+
+	}
+}
+
+*SC018::{
+	If (GetKeyState("Lalt","p") || GetKeyState("Ralt","p")) {
+		Send "{blind}{Up}"
+	} Else If !mouseless
+	{
+		If (layout == "en_col") {
+			Send "{blind}y"
+		} else {
+			Send "{blind}{o}"
+		}
+
+	}
+}
+
+*SC019::{
+	If (GetKeyState("Lalt","p") || GetKeyState("Ralt","p")) {
+		Send "{blind}{Right}"
+	} Else If !mouseless
+	{
+		If (layout == "en_col") {
+			Send "{blind};"
+		} else {
+			Send "{blind}{p}"
+		}
+
+	}
+}
+
+*SC034::{
+	If (GetKeyState("Lalt","p") || GetKeyState("Ralt","p")) {
+		en_layout()
+	} Else If !mouseless
+	{
+		Send "{blind}{SC034}"
+	}
+}
+*SC026::{
+	If (GetKeyState("Lalt","p") || GetKeyState("Ralt","p")) {
+		en_col_layout()
+	} Else If !mouseless
+	{
+		If (layout == "en_col") {
+			Send "{blind}i"
+		} else {
+			Send "{blind}{l}"
+		}
+	} Else If !(GetKeyState("Lalt","p") || GetKeyState("Ralt","p")) {
+		global ym
+
+		ym := -1
+	}
+}
+*SC026 Up::
+{
+	global ym
+	If ym == -1 {
+		ym := 0
+	}
+}
+*SC027::{
+	If (GetKeyState("LWin","p")||GetKeyState("RWin","p")) {
+		global alttab
+		If (alttab == "half") {
+			Send "{LAlt Down}"
+			alttab := "enabled"
+		}
+		
+		Send "{Tab}"
+	} else If (GetKeyState("Lalt","p") || GetKeyState("Ralt","p")) {
+		rus_layout()
+	} Else If !mouseless {
+		If (layout == "en_col") {
+			Send "{blind}o"
+		} else {
+			Send "{blind}{SC027}"
+		}
+
+	} Else If !(GetKeyState("Lalt","p") || GetKeyState("Ralt","p")) {
+		global xm
+
+		xm := 1
+	}
+}
+*SC027 Up::
+{
+	global xm
+	If xm == 1 {
+		xm := 0
+	}
+}
 ;!д::en_col_layout()
-
-#HotIf
-
 
 
 capslock::
 {
-	global mouseless
-	if mouseless {
-		mouseless := False
+	If (GetKeyState("Lalt","p") || GetKeyState("Ralt","p")) {
+		global mouseless
+		if mouseless {
+			mouseless := False
+		}
 	} else Send "{Esc}"
 }
+!capslock::Send "{capslock}"
 
-#HotIf (mouseless) && !(GetKeyState("Lalt","p") || GetKeyState("Ralt","p"))
-
-SC01E::
+*SC01E::
 {
-	global speed
-	speed := 5
-}
-
-SC01E Up::
-{
-	global speed
-	speed := 25
-}
-
-SC024::
-SC025::
-SC026::
-SC027::
-SC024 Up::
-SC025 Up::
-SC026 Up::
-SC027 Up::
-{
-	global xm
-	global ym
-	global speed
-
-	xm := 0
-	ym := 0
-
-	If GetKeyState("j","p") && !GetKeyState(";","p") {
-		xm := -1
-		jk := True
-	} else {
-		jk := False
-	}
-	
-	If GetKeyState(";","p") && !GetKeyState("j","p") {
-		xm := 1
-		sk := True
-	} else {
-		sk := False
-	}
-	
-	If GetKeyState("l","p") && !GetKeyState("k","p") {
-		ym := -1
-		lk := True
-	} else {
-		lk := False
-	}
-	
-	If GetKeyState("k","p") && !GetKeyState("l","p") {
-		ym := 1
-		kk := True
-	} else {
-		kk := False
+	If (mouseless) && !(GetKeyState("Lalt","p") || GetKeyState("Ralt","p")) {
+		global speed
+		speed := 5
+	} Else If !mouseless
+	{
+		Send "{blind}{a}"
 	}
 }
 
-SC021::
+*SC01E Up::
 {
-	Click "Down"
-	KeyWait "f"
-	Click "Up"
-}
-
-SC02F::
-{
-	Click "Middle, Down"
-	KeyWait "d"
-	Click "Middle, Up"
-}
-
-SC020::
-{
-	Click "Right, Down"
-	KeyWait "d"
-	Click "Right, Up"
-}
-
-SC011::
-{
-	While GetKeyState("w","p") {
-		click "WU"	
-		Sleep(50)
-	}
-}
-SC012::
-{
-	While GetKeyState("e","p") {
-		click "WD"	
-		Sleep(50)
-	}
-}
-SC01F::
-{
-	global mouseless
-	if mouseless {
-		mouseless := false
+	If (mouseless) && !(GetKeyState("Lalt","p") || GetKeyState("Ralt","p")) {
+		global speed
+		speed := 25
 	}
 }
 
-#HotIf
+;SC024::
+;SC025::
+;SC026::
+;SC027::
+;SC024 Up::
+;SC025 Up::
+;SC026 Up::
+;SC027 Up::
+;{
+;	If (mouseless) && !(GetKeyState("Lalt","p") || GetKeyState("Ralt","p")) {
+;		global xm
+;		global ym
+;		global speed
+;
+;		xm := 0
+;		ym := 0
+;
+;		If GetKeyState("j","p") && !GetKeyState(";","p") {
+;			xm := -1
+;		}
+;		
+;		If GetKeyState(";","p") && !GetKeyState("j","p") {
+;			xm := 1
+;		}
+;		
+;		If GetKeyState("l","p") && !GetKeyState("k","p") {
+;			ym := -1
+;		}
+;		
+;		If GetKeyState("k","p") && !GetKeyState("l","p") {
+;			ym := 1
+;		}
+;	}
+;}
 
+*SC021::
+{
+	If (mouseless) && !(GetKeyState("Lalt","p") || GetKeyState("Ralt","p")) {
+		Click "Down"
+		KeyWait "f"
+		Click "Up"
+	} Else If !mouseless
+	{
+		If (layout == "en_col") {
+			Send "{blind}t"
+		} else {
+			Send "{blind}{f}"
+		}
+
+	}
+}
+
+*SC02F::
+{
+	If (mouseless) && !(GetKeyState("Lalt","p") || GetKeyState("Ralt","p")) {
+		Click "Middle, Down"
+		KeyWait "v"
+		Click "Middle, Up"
+	} Else If !mouseless
+	{
+		Send "{blind}{v}"
+	}
+}
+
+*SC020::
+{
+	If (mouseless) && !(GetKeyState("Lalt","p") || GetKeyState("Ralt","p")) {
+		Click "Right, Down"
+		KeyWait "d"
+		Click "Right, Up"
+	} Else If !mouseless
+	{
+		If (layout == "en_col") {
+			Send "{blind}s"
+		} else {
+			Send "{blind}{d}"
+		}
+
+	}
+}
 
 ;SC023::MouseMove 20, 30, 50, "R"
 
@@ -336,7 +616,6 @@ en_layout(){
 ;	}
 ;}
 
-#HotIf (!mouseless)
 ; Переключение окон посредством alt+j, alt+; :
 
 ; AltTab, ShiftAltTab и прочие команды работают хуже второго способа.
@@ -349,6 +628,7 @@ en_layout(){
 
 ;Первый способ:
 
+;#HotIf (!mouseless)
 ;LWin Up::AltTabMenuDismiss
 ;;	Send "{LWin}"
 ;;	alttab := "none"
@@ -380,237 +660,166 @@ en_layout(){
 ;	alttab := "none"
 ;}
 
-#HotIf
+;#HotIf
 
 ; Второй способ:
 
 Lwin::{
-	global alttab
-	if (alttab == "none") {
-		alttab := "half"
+	If !(mouseless) {
+		global alttab
+		If (alttab == "none") {
+			alttab := "half"
+		}
 	}
 }
 
 Rwin::{
-	global alttab
-	if (alttab == "none") {
-		alttab := "half"
+	If !(mouseless) {
+		global alttab
+		if (alttab == "none") {
+			alttab := "half"
+		}
 	}
 }
 
 LWin Up::{
-	global alttab
-	if (alttab == "enabled") {
-		Sleep(25)
-		Send "{LAlt Up}"
-		alttab := "none"
+	If !(mouseless) {
+		global alttab
+		if (alttab == "enabled") {
+			Sleep(25)
+			Send "{LAlt Up}"
+			alttab := "none"
+		}
 	}
 }
 
 RWin Up::{
-	global alttab
-	if (alttab == "enabled") {
-		Sleep(25)
-		Send "{LAlt Up}"
-		alttab := "none"
+	If !(mouseless) {
+		global alttab
+		if (alttab == "enabled") {
+			Sleep(25)
+			Send "{LAlt Up}"
+			alttab := "none"
+		}
 	}
 }
 
-#HotIf (GetKeyState("LWin","p")||GetKeyState("RWin","p"))
+;#HotIf (GetKeyState("LWin","p")||GetKeyState("RWin","p"))
 
-SC035::Run "explorer"
-SC027::
+*SC024::
 {
-	global alttab
-	If (alttab == "half") {
-		Send "{LAlt Down}"
-		alttab := "enabled"
-	}
-	
-	Send "{Tab}"
-}
+	If (GetKeyState("LWin","p")||GetKeyState("RWin","p")) {
+		global alttab
+		If (alttab == "half") {
+			Send "{LAlt Down}"
+			alttab := "enabled"
+			Send "{Tab}"
+		} else {
+			Send "{RShift Down}{Tab}{RShift Up}"
+		}
+	} Else If !mouseless
+	{
+		If (layout == "en_col") {
+			Send "{blind}n"
+		} else {
+			Send "{blind}{j}"
+		}
 
-SC024::
+	} Else If !(GetKeyState("Lalt","p") || GetKeyState("Ralt","p")) {
+		global xm
+
+		xm := -1
+	}
+}
+*SC024 Up::
 {
-	global alttab
-	If (alttab == "half") {
-		Send "{LAlt Down}"
-		alttab := "enabled"
-		Send "{Tab}"
-	} else {
-		Send "{RShift Down}{Tab}{RShift Up}"
+	global xm
+	If xm == -1 {
+		xm := 0
 	}
 }
 
-#HotIf
+;#HotIf
 
-#HotIf (layout == "en_col") && !mouseless
+;#HotIf (layout == "en_col") && !mouseless
 
 ;SC010::q
 ;SC011::w
 *SC012::
 {
-	If (layout == "en_col") && !mouseless
+	If (GetKeyState("Lalt","p") || GetKeyState("Ralt","p")) {
+		Send "{Backspace}"
+	} else If (mouseless) {
+		While GetKeyState("e","p") {
+			click "WD"	
+			Sleep(50)
+		}
+	} Else If !mouseless
 	{
-		Send "{blind}f"
-	}
-}
-*SC013::
-{
-	If (layout == "en_col") && !mouseless
-	{
-		Send "{blind}p"
+		If (layout == "en_col") {
+			Send "{blind}f"
+		} else {
+			Send "{blind}{e}"
+		}
+
 	}
 }
 *SC014::
 {
-	If (layout == "en_col") && !mouseless
+	If !mouseless
 	{
-		Send "{blind}b"
+		If (layout == "en_col") {
+			Send "{blind}b"
+		} else {
+			Send "{blind}{t}"
+		}
+
 	}
 }
 *SC015::
 {
-	If (layout == "en_col") && !mouseless
+	If !mouseless
 	{
-		Send "{blind}j"
-	}
-}
-*SC016::
-{
-	If (layout == "en_col") && !mouseless
-	{
-		Send "{blind}l"
-	}
-}
-*SC017::
-{
-	If (layout == "en_col") && !mouseless
-	{
-		Send "{blind}u"
-	}
-}
-*SC018::
-{
-	If (layout == "en_col") && !mouseless
-	{
-		Send "{blind}y"
-	}
-}
-*SC019::
-{
-	If (layout == "en_col") && !mouseless
-	{
-		Send "{blind};"
+		If (layout == "en_col") {
+			Send "{blind}j"
+		} else {
+			Send "{blind}{y}"
+		}
+
 	}
 }
 
 ;SC01E::a
-*SC01F::
-{
-	If (layout == "en_col") && !mouseless
-	{
-		Send "{blind}r"
-	}
-}
-*SC020::
-{
-	If (layout == "en_col") && !mouseless
-	{
-		Send "{blind}s"
-	}
-}
-*SC021::
-{
-	If (layout == "en_col") && !mouseless
-	{
-		Send "{blind}t"
-	}
-}
 ;SC022::g
 *SC023::
 {
-	If (layout == "en_col") && !mouseless
+	If !mouseless
 	{
-		Send "{blind}m"
-	}
-}
-*SC024::
-{
-	If (layout == "en_col") && !mouseless
-	{
-		Send "{blind}n"
-	}
-}
-*SC025::
-{
-	If (layout == "en_col") && !mouseless
-	{
-		Send "{blind}e"
-	}
-}
-*SC026::
-{
-	If (layout == "en_col") && !mouseless
-	{
-		Send "{blind}i"
-	}
-}
-*SC027::
-{
-	If (layout == "en_col") && !mouseless
-	{
-		Send "{blind}o"
-	}
-}
+		If (layout == "en_col") {
+			Send "{blind}m"
+		} else {
+			Send "{blind}{h}"
+		}
 
-*SC02c::
-{
-	If (layout == "en_col") && !mouseless
-	{
-		Send "{blind}x"
 	}
 }
-*SC02d::
-{
-	If (layout == "en_col") && !mouseless
-	{
-		Send "{blind}c"
-	}
-}
-*SC02e::
-{
-	If (layout == "en_col") && !mouseless
-	{
-		Send "{blind}d"
-	}
-}
-;SC02f::v
+;SC02F::v
 *SC030::
 {
-	If (layout == "en_col") && !mouseless
+	If !mouseless
 	{
-		Send "{blind}z"
-	}
-}
-*SC031::
-{
-	If (layout == "en_col") && !mouseless
-	{
-		Send "{blind}k"
-	}
-}
-*SC032::
-{
-	If (layout == "en_col") && !mouseless
-	{
-		Send "{blind}h"
+		If (layout == "en_col") {
+			Send "{blind}z"
+		} else {
+			Send "{blind}{b}"
+		}
+
 	}
 }
 
 ; set Backspace to CapsLock key
 
-; sc03a::backspace
+; sc03A::backspace
 
-#HotIf
+;#HotIf
 
