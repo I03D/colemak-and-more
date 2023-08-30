@@ -171,6 +171,12 @@ MoveM() {
 		Send "{blind}{SC028}"
 	}
 }
+SC03E::{
+If ((GetKeyState("Lalt","p") || GetKeyState("Ralt","p"))) && !altmode {
+	Send "{Lalt Down}{F4}{Lalt Up}"
+}
+}
+	
 *SC025::{
 	global alttab
 
@@ -368,6 +374,8 @@ MoveM() {
 
 *SC034::{
 	If ((GetKeyState("Lalt","p") || GetKeyState("Ralt","p"))) && !altmode {
+		global mouseless
+		mouseless := False
 		en_layout()
 	} Else If !mouseless
 	{
@@ -379,6 +387,8 @@ MoveM() {
 	Global mouseless
 
 	If ((GetKeyState("Lalt","p") || GetKeyState("Ralt","p"))) && !altmode {
+		global mouseless
+		mouseless := False
 		en_col_layout()
 	} Else If !mouseless
 	{
@@ -410,6 +420,8 @@ MoveM() {
 		
 		Send "{Tab}"
 	} else If ((GetKeyState("Lalt","p") || GetKeyState("Ralt","p"))) && !altmode {
+		global mouseless
+		mouseless := False
 		rus_layout()
 	} Else If !mouseless {
 		If (layout == "en_col") {
@@ -453,7 +465,7 @@ capslock::
 		speed := 5
 	} Else If !mouseless
 	{
-		Send "{blind}{a}"
+		Send "{blind}{SC01E}"
 	}
 }
 
@@ -519,7 +531,9 @@ capslock::
 
 *SC02F::
 {
-	If ((mouseless) && !(GetKeyState("Lalt","p") || GetKeyState("Ralt","p"))) && !altmode {
+	If !mouseless && !altmode && (GetKeyState("Lalt","p") || GetKeyState("Ralt","p")) {
+		SoundSetVolume 0
+	} Else If (mouseless) {
 		Click "Middle, Down"
 		KeyWait "v"
 		Click "Middle, Up"
@@ -729,11 +743,9 @@ Lwin::{
 	global allowStartMenu
 	;allowStartMenu := True
 
-	If !(mouseless) {
-		global alttab
-		If (alttab == "none") {
-			alttab := "half-enabled"
-		}
+	global alttab
+	If (alttab == "none") {
+		alttab := "half-enabled"
 	}
 }
 
@@ -741,40 +753,34 @@ Rwin::{
 	global allowStartMenu
 	;allowStartMenu := True
 
-	If !(mouseless) {
-		global alttab
-		if (alttab == "none") {
-			alttab := "half-enabled"
-		}
+	global alttab
+	if (alttab == "none") {
+		alttab := "half-enabled"
 	}
 }
 
 
 LWin Up::{
-	If !(mouseless) {
-		global alttab
-		if (alttab == "enabled" || alttab == "half-disabled") {
-			Sleep(50)
-			; Приходится различать half- "-enabled" и "disabled", потому что не не всегда зажат альт, чтобы его отпускать.
-			Send "{LAlt Up}"
-			alttab := "none"
-		} Else If allowStartMenu {
-			Send "{LWin}"
-		}
+	global alttab
+	if (alttab == "enabled" || alttab == "half-disabled") {
+		Sleep(50)
+		; Приходится различать half- "-enabled" и "disabled", потому что не не всегда зажат альт, чтобы его отпускать.
+		Send "{LAlt Up}"
+		alttab := "none"
+	} Else If allowStartMenu {
+		Send "{LWin}"
 	}
 }
 
 RWin Up::{
-	If !(mouseless) {
-		global alttab
-		if (alttab == "enabled" || alttab == "half-disabled") {
-			Sleep(25)
-			Send "{LAlt Up}"
-			; Приходится различать half- "-enabled" и "disabled", потому что не не всегда зажат альт, чтобы его отпускать.
-			alttab := "none"
-		} Else If allowStartMenu {
-			Send "{RWin}"
-		}
+	global alttab
+	if (alttab == "enabled" || alttab == "half-disabled") {
+		Sleep(25)
+		Send "{LAlt Up}"
+		; Приходится различать "half-" "-enabled" и "disabled", потому что не не всегда зажат альт, чтобы его отпускать.
+		alttab := "none"
+	} Else If allowStartMenu {
+		Send "{RWin}"
 	}
 }
 
@@ -823,7 +829,9 @@ RWin Up::{
 {
 	If ((GetKeyState("Lalt","p") || GetKeyState("Ralt","p"))) && !altmode {
 		Send "{Backspace}"
-	} else If (mouseless) {
+	} Else If ((GetKeyState("LWin","p") || GetKeyState("RWin","p"))) {
+		Run "explorer"
+	} Else If (mouseless) {
 		While GetKeyState("e","p") {
 			click "WD"	
 			Sleep(50)
