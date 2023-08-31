@@ -172,9 +172,9 @@ MoveM() {
 	}
 }
 SC03E::{
-If ((GetKeyState("Lalt","p") || GetKeyState("Ralt","p"))) && !altmode {
-	Send "{Lalt Down}{F4}{Lalt Up}"
-}
+	If ((GetKeyState("Lalt","p") || GetKeyState("Ralt","p"))) && !altmode {
+		Send "{Lalt Down}{F4}{Lalt Up}"
+	}
 }
 	
 *SC025::{
