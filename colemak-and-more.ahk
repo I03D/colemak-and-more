@@ -5,6 +5,7 @@ alttab := "none"
 altmode := False
 
 allowStartMenu := True
+enableStartMenuOnRelease := False
 
 mouseless := False
 xm := 0
@@ -397,7 +398,7 @@ SC03E::{
 *SC027::{
 	If (GetKeyState("LWin","p")||GetKeyState("RWin","p")) {
 		global alttab
-		If (alttab == "half-enabledw" || alttab == "half-disabledw") {
+		If (alttab == "half-enabledw" || alttab == "half-disabledw" || alttab == "half-enabledt" || alttab == "half-disabledt") {
 			Send "{LAlt Down}"
 			alttab := "enabledw"
 		}
@@ -531,6 +532,7 @@ capslock::
 {
 	global alttab
 	global allowStartMenu
+	global enableStartMenuOnRelease
 
 	If ((mouseless) && !(GetKeyState("Lalt","p") || GetKeyState("Ralt","p"))) && !altmode {
 		Click "Right, Down"
@@ -543,6 +545,7 @@ capslock::
 		} Else {
 			Send "{RWin Down}d{RWin Up}"
 			allowStartMenu := False
+			enableStartMenuOnRelease := True
 		}
 	} Else If !mouseless
 	{
@@ -746,6 +749,9 @@ Rwin::{
 
 LWin Up::{
 	global alttab
+	global allowStartMenu
+	global enableStartMenuOnRelease
+
 	if (alttab == "enabledw" || alttab == "half-disabledw") {
 		Sleep(50)
 		; Приходится различать half- "-enabledw" и "disabledw", потому что не не всегда зажат альт, чтобы его отпускать.
@@ -754,6 +760,9 @@ LWin Up::{
 	} Else If allowStartMenu {
 		Send "{LWin}"
 		alttab := "none"
+	} Else If (enableStartMenuOnRelease == True) {
+		allowStartMenu := True
+		enableStartMenuOnRelease := False
 	}
 }
 
@@ -822,7 +831,7 @@ Ralt Up::{
 {
 	If (GetKeyState("LWin","p")||GetKeyState("RWin","p")) {
 		global alttab
-		If (alttab == "half-enabledw" || alttab == "half-disabledw") {
+		If (alttab == "half-enabledw" || alttab == "half-disabledw" || alttab == "half-enabledt" || alttab == "half-disabledt") {
 			Send "{LAlt Down}"
 			alttab := "enabledw"
 			Send "{Tab}"
