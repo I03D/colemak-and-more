@@ -14,6 +14,9 @@ speed := 25
 ;LAlt::return
 ;RAlt::return
 
+^LShift::return
+^RShift::return
+
 ;!SC039::
 ;{
 ;	MsgBox("test")
@@ -750,6 +753,7 @@ LWin Up::{
 		alttab := "none"
 	} Else If allowStartMenu {
 		Send "{LWin}"
+		alttab := "none"
 	}
 }
 
@@ -762,6 +766,7 @@ RWin Up::{
 		alttab := "none"
 	} Else If allowStartMenu {
 		Send "{RWin}"
+		alttab := "none"
 	}
 }
 
@@ -780,6 +785,22 @@ Ralt::{
 }
 
 Lalt Up::{
+	global altmode
+	If altmode {
+		Send "{LAlt Up}"
+		altmode := False
+	}
+
+	global alttab
+	if (alttab == "enabledt" || alttab == "half-disabledt") {
+		Sleep(25)
+		Send "{LAlt Up}"
+		; Приходится различать "half-" "-enabledt" и "disabledt", потому что не не всегда зажат альт, чтобы его отпускать.
+		alttab := "none"
+	}
+}
+
+Ralt Up::{
 	global altmode
 	If altmode {
 		Send "{LAlt Up}"
@@ -935,3 +956,4 @@ SC0F::
 		Send "{Rshift Down}{tab}{RShift Up}"
 	}
 }
+
