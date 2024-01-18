@@ -11,26 +11,8 @@ xm := 0
 ym := 0
 speed := 25
 
-LAlt::return
-RAlt::return
-
-LAlt Up::
-{
-	global altmode
-	If altmode {
-		Send "{LAlt Up}"
-		altmode := False
-	}
-}
-
-RAlt Up::
-{
-	global altmode
-	If altmode {
-		Send "{LAlt Up}"
-		altmode := False
-	}
-}
+;LAlt::return
+;RAlt::return
 
 ;!SC039::
 ;{
@@ -136,7 +118,6 @@ MoveM() {
 		} else {
 			Send "{blind}{c}"
 		}
-
 	}
 }
 *SC01F::{
@@ -150,9 +131,9 @@ MoveM() {
 		If mouseless {
 			mouseless := false
 		}
-	} Else If alttab == "enabled" {
+	} Else If alttab == "enabledw" {
 		Send "{Escape}"
-		alttab := "half-disabled"
+		alttab := "half-disabledw"
 	} Else If !mouseless
 	{
 		If (layout == "en_col") {
@@ -183,9 +164,9 @@ SC03E::{
 	If ((GetKeyState("Lalt","p") || GetKeyState("Ralt","p"))) && !altmode {
 		Send "{Lalt Down}{F4}{Lalt Up}"
 	} Else If (GetKeyState("LWin","p") || GetKeyState("RWin","p")) {
-		If alttab == "enabled" {
+		If alttab == "enabledw" {
 			Send "{Escape}"
-			alttab := "half-disabled"
+			alttab := "half-disabledw"
 		} Else {
 			Send "{RWin Down}{SC025}{RWin Up}"
 		}
@@ -413,9 +394,9 @@ SC03E::{
 *SC027::{
 	If (GetKeyState("LWin","p")||GetKeyState("RWin","p")) {
 		global alttab
-		If (alttab == "half-enabled" || alttab == "half-disabled") {
+		If (alttab == "half-enabledw" || alttab == "half-disabledw") {
 			Send "{LAlt Down}"
-			alttab := "enabled"
+			alttab := "enabledw"
 		}
 		
 		Send "{Tab}"
@@ -553,9 +534,9 @@ capslock::
 		KeyWait "d"
 		Click "Right, Up"
 	} Else If (GetKeyState("LWin","p") || GetKeyState("RWin","p")) {
-		If alttab == "enabled" {
+		If alttab == "enabledw" {
 			Send "{Escape}"
-			alttab := "half-disabled"
+			alttab := "half-disabledw"
 		} Else {
 			Send "{RWin Down}d{RWin Up}"
 			allowStartMenu := False
@@ -613,10 +594,10 @@ en_layout() {
 ;	global mouseless
 ;
 ;	if not mouseless {
-;		if (alttab == "half-enabled") {
+;		if (alttab == "half-enabledw") {
 ;			Send "{Ralt Down}{tab}"
-;			alttab := "enabled"
-;		} else if (alttab == "enabled") {
+;			alttab := "enabledw"
+;		} else if (alttab == "enabledw") {
 ;			Send "{RShift Down}{tab}{RShift Up}"
 ;		} else if (alttab == "none") {
 ;			if (layout == "en") {
@@ -636,9 +617,9 @@ en_layout() {
 ;	global mouseless
 ;
 ;	if not mouseless {
-;		if (alttab == "half-enabled") {
+;		if (alttab == "half-enabledw") {
 ;			Send "{Ralt Down}{tab}"
-;			alttab := "enabled"
+;			alttab := "enabledw"
 ;		} else if (alttab == "none") {
 ;			if (layout == "en") {
 ;				Send ";"
@@ -647,7 +628,7 @@ en_layout() {
 ;			} else {
 ;				Send "ж"
 ;			}
-;		} else if (alttab == "enabled") {
+;		} else if (alttab == "enabledw") {
 ;			Send "{tab}"
 ;		}
 ;	}
@@ -724,7 +705,7 @@ en_layout() {
 ;	global alttab
 ;	global layout
 ;	AltTabMenuDismiss
-;	if (alttab == "enabled") {
+;	if (alttab == "enabledw") {
 ;		Send "{Ralt Up}"
 ;		if (layout == "ru") {
 ;			Send "{Space}"
@@ -745,7 +726,7 @@ Lwin::{
 
 	global alttab
 	If (alttab == "none") {
-		alttab := "half-enabled"
+		alttab := "half-enabledw"
 	}
 }
 
@@ -755,16 +736,16 @@ Rwin::{
 
 	global alttab
 	if (alttab == "none") {
-		alttab := "half-enabled"
+		alttab := "half-enabledw"
 	}
 }
 
 
 LWin Up::{
 	global alttab
-	if (alttab == "enabled" || alttab == "half-disabled") {
+	if (alttab == "enabledw" || alttab == "half-disabledw") {
 		Sleep(50)
-		; Приходится различать half- "-enabled" и "disabled", потому что не не всегда зажат альт, чтобы его отпускать.
+		; Приходится различать half- "-enabledw" и "disabledw", потому что не не всегда зажат альт, чтобы его отпускать.
 		Send "{LAlt Up}"
 		alttab := "none"
 	} Else If allowStartMenu {
@@ -774,13 +755,43 @@ LWin Up::{
 
 RWin Up::{
 	global alttab
-	if (alttab == "enabled" || alttab == "half-disabled") {
+	if (alttab == "enabledw" || alttab == "half-disabledw") {
 		Sleep(25)
 		Send "{LAlt Up}"
-		; Приходится различать "half-" "-enabled" и "disabled", потому что не не всегда зажат альт, чтобы его отпускать.
+		; Приходится различать "half-" "-enabledw" и "disabledw", потому что не не всегда зажат альт, чтобы его отпускать.
 		alttab := "none"
 	} Else If allowStartMenu {
 		Send "{RWin}"
+	}
+}
+
+Lalt::{
+	global alttab
+	If (alttab == "none") {
+		alttab := "half-enabledt"
+	}
+}
+
+Ralt::{
+	global alttab
+	If (alttab == "none") {
+		alttab := "half-enabledt"
+	}
+}
+
+Lalt Up::{
+	global altmode
+	If altmode {
+		Send "{LAlt Up}"
+		altmode := False
+	}
+
+	global alttab
+	if (alttab == "enabledt" || alttab == "half-disabledt") {
+		Sleep(25)
+		Send "{LAlt Up}"
+		; Приходится различать "half-" "-enabledt" и "disabledt", потому что не не всегда зажат альт, чтобы его отпускать.
+		alttab := "none"
 	}
 }
 
@@ -790,9 +801,9 @@ RWin Up::{
 {
 	If (GetKeyState("LWin","p")||GetKeyState("RWin","p")) {
 		global alttab
-		If (alttab == "half-enabled" || alttab == "half-disabled") {
+		If (alttab == "half-enabledw" || alttab == "half-disabledw") {
 			Send "{LAlt Down}"
-			alttab := "enabled"
+			alttab := "enabledw"
 			Send "{Tab}"
 		} else {
 			Send "{RShift Down}{Tab}{RShift Up}"
@@ -899,9 +910,28 @@ RWin Up::{
 	}
 }
 
-; set Backspace to CapsLock key
-
-; sc03A::backspace
-
 ;#HotIf
 
+SC0F::
+{
+	global alttab
+	If (alttab == "half-enabledt" || alttab == "half-disabledt") {
+		Send "{LAlt Down}"
+		alttab := "enabledt"
+		Send "{Tab}"
+	} else {
+		Send "{tab}"
+	}
+}
+
++SC0F::
+{
+	global alttab
+	If (alttab == "half-enabledt" || alttab == "half-disabledt") {
+		Send "{LAlt Down}"
+		alttab := "enabledt"
+		Send "{RShift Down}{Tab}{RShift Up}"
+	} else {
+		Send "{Rshift Down}{tab}{RShift Up}"
+	}
+}
