@@ -1,5 +1,7 @@
 #SingleInstance Force
 
+CoordMode "Mouse", "Screen"
+
 layout := "en_col"
 alttab := "none"
 altmode := False
@@ -8,9 +10,19 @@ allowStartMenu := True
 enableStartMenuOnRelease := False
 
 mouseless := False
+mousemode := "none"
 xm := 0
 ym := 0
 speed := 25
+
+xGap := A_ScreenWidth / 4
+xShift := floor(xGap / 2)
+
+yGap := A_ScreenHeight / 4
+yShift := floor(yGap / 2)
+
+yGap := floor(yGap)
+xGap := floor(xGap)
 
 ;LAlt::return
 ;RAlt::return
@@ -84,10 +96,18 @@ MoveM() {
 	} Else If !mouseless
 	{
 		Send "{blind}{SC035}"
+	} Else If mousemode == "set" {
+		global mousemode
+		MouseMove xShift, yShift + yGap * 3
+		mousemode := "move"
+		SetTimer MoveM, 16
 	}
 }
 *SC02C::{
-	If ((GetKeyState("Lalt","p") || GetKeyState("Ralt","p"))) && !altmode {
+	If ((mouseless && mousemode != "set") && !(GetKeyState("Lalt","p") || GetKeyState("Ralt","p"))) && !altmode {
+		global speed
+		speed := 1
+	} Else If ((GetKeyState("Lalt","p") || GetKeyState("Ralt","p"))) && !altmode {
 		Send "{Volume_Down}"
 	} Else If !mouseless
 	{
@@ -96,9 +116,20 @@ MoveM() {
 		} else {
 			Send "{blind}{z}"
 		}
-
+	} Else If mousemode == "set" {
+		global mousemode
+		MouseMove xShift + xGap * 3, yShift + yGap
+		mousemode := "move"
+		SetTimer MoveM, 16
 	}
 }
+*SC02C Up::{
+	If ((mouseless) && !(GetKeyState("Lalt","p") || GetKeyState("Ralt","p"))) && !altmode {
+		global speed
+		speed := 25
+	}
+}
+
 *SC02D::{
 	If ((GetKeyState("Lalt","p") || GetKeyState("Ralt","p"))) && !altmode {
 		Send "{Volume_Up}"
@@ -110,6 +141,11 @@ MoveM() {
 			Send "{blind}{x}"
 		}
 
+	} Else If mousemode == "set" {
+		global mousemode
+		MouseMove xShift + xGap * 2, yShift + yGap
+		mousemode := "move"
+		SetTimer MoveM, 16
 	}
 }
 *SC02E::{
@@ -122,20 +158,29 @@ MoveM() {
 		} else {
 			Send "{blind}{c}"
 		}
+	} Else If mousemode == "set" {
+		global mousemode
+		MouseMove xShift + xGap, yShift + yGap
+		mousemode := "move"
+		SetTimer MoveM, 16
 	}
 }
 *SC01F::{
 	global alttab
 	global mouseless
 
-	If ((GetKeyState("Lalt","p") || GetKeyState("Ralt","p"))) && !altmode {
-		MsgBox("Close / Press Ok to reload...")
-		Reload
+	If ((GetKeyState("LAlt","p") || GetKeyState("RAlt","p"))) && !altmode {
+		If ((GetKeyState("RWin","p") || GetKeyState("LWin","p"))) {
+			Suspend
+		} Else {
+			MsgBox("Close / Press Ok to reload...")
+			Reload
+		}
 	} Else If ((mouseless) && !(GetKeyState("Lalt","p") || GetKeyState("Ralt","p"))) && !altmode {
-		If mouseless {
+		If mouseless && mousemode != "set"{
 			mouseless := false
 		}
-	} Else If alttab == "enabledw" {
+	} Else If alttab == "enabledw" && !mouseless{
 		Send "{Escape}"
 		alttab := "half-disabledw"
 	} Else If !mouseless
@@ -145,6 +190,12 @@ MoveM() {
 		} Else {
 			Send "{blind}{s}"
 		}
+	}
+	If mouseless && mousemode == "set" {
+		global mousemode
+		MouseMove xShift + xGap, yShift
+		mousemode := "move"
+		SetTimer MoveM, 16
 	}
 }
 
@@ -181,7 +232,12 @@ SC03E::{
 		} else {
 			Send "{blind}{k}"
 		}
-	} Else {
+	} Else If mousemode == "set" {
+		global mousemode
+		MouseMove xShift + xGap, yShift + yGap * 2
+		mousemode := "move"
+		SetTimer MoveM, 16
+	} Else If mousemode == "move" {
 		global ym
 
 		ym := 1
@@ -256,7 +312,11 @@ SC03E::{
 		} else {
 			Send "{blind}{m}"
 		}
-
+	} Else If mousemode == "set" {
+		global mousemode
+		MouseMove xShift + xGap * 3, yShift + yGap * 3
+		mousemode := "move"
+		SetTimer MoveM, 16
 	}
 }
 
@@ -293,13 +353,20 @@ SC03E::{
 {
 	If ((GetKeyState("Lalt","p") || GetKeyState("Ralt","p"))) && !altmode {
 		global mouseless
+		global mousemode
 		mouseless := !mouseless
 		if mouseless {
 			SetTimer MoveM, 16
+			mousemode := "move"
 		}
 	} Else If !mouseless
 	{
 		Send "{blind}{SC33}"
+	} Else If mousemode == "set" {
+		global mousemode
+		MouseMove xShift + xGap * 2, yShift + yGap * 3
+		mousemode := "move"
+		SetTimer MoveM, 16
 	}
 }
 
@@ -365,6 +432,11 @@ SC03E::{
 	} Else If !mouseless
 	{
 		Send "{blind}{SC034}"
+	} Else If mousemode == "set" {
+		global mousemode
+		MouseMove xShift + xGap, yShift + yGap * 3
+		mousemode := "move"
+		SetTimer MoveM, 16
 	}
 }
 
@@ -382,7 +454,12 @@ SC03E::{
 		} else {
 			Send "{blind}{l}"
 		}
-	} Else {
+	} Else If mousemode == "set" {
+		global mousemode
+		MouseMove xShift + xGap * 2, yShift + yGap * 2
+		mousemode := "move"
+		SetTimer MoveM, 16
+	} Else If mousemode == "move" {
 		global ym
 
 		ym := -1
@@ -414,8 +491,12 @@ SC03E::{
 		} else {
 			Send "{blind}{SC027}"
 		}
-
-	} Else {
+	} Else If mousemode == "set" {
+		global mousemode
+		MouseMove xShift + xGap * 3, yShift + yGap * 2
+		mousemode := "move"
+		SetTimer MoveM, 16
+	} Else If mousemode == "move" {
 		global xm
 
 		xm := 1
@@ -445,12 +526,16 @@ capslock::
 
 *SC01E::
 {
-	If ((mouseless) && !(GetKeyState("Lalt","p") || GetKeyState("Ralt","p"))) && !altmode {
+	If ((mouseless) && !(GetKeyState("Lalt","p") || GetKeyState("Ralt","p"))) && !altmode && mousemode == "move" {
 		global speed
 		speed := 5
-	} Else If !mouseless
-	{
+	} Else If !mouseless {
 		Send "{blind}{SC01E}"
+	} Else If mousemode == "set" {
+		global mousemode
+		MouseMove xShift, yShift
+		mousemode := "move"
+		SetTimer MoveM, 16
 	}
 }
 
@@ -499,7 +584,7 @@ capslock::
 
 *SC021::
 {
-	If ((mouseless) && !(GetKeyState("Lalt","p") || GetKeyState("Ralt","p"))) && !altmode {
+	If ((mouseless && mousemode != "set") && !(GetKeyState("Lalt","p") || GetKeyState("Ralt","p"))) && !altmode {
 		Click "Down"
 		KeyWait "f"
 		Click "Up"
@@ -510,7 +595,11 @@ capslock::
 		} else {
 			Send "{blind}{f}"
 		}
-
+	} Else If mousemode == "set" {
+		global mousemode
+		MouseMove xShift + xGap * 3, yShift
+		mousemode := "move"
+		SetTimer MoveM, 16
 	}
 }
 
@@ -518,13 +607,18 @@ capslock::
 {
 	If !mouseless && !altmode && (GetKeyState("Lalt","p") || GetKeyState("Ralt","p")) {
 		SoundSetVolume 0
-	} Else If (mouseless) {
+	} Else If (mouseless && mousemode != "set") {
 		Click "Middle, Down"
 		KeyWait "v"
 		Click "Middle, Up"
 	} Else If !mouseless
 	{
 		Send "{blind}{v}"
+	} Else If mousemode == "set" {
+		global mousemode
+		MouseMove xShift, yShift + yGap
+		mousemode := "move"
+		SetTimer MoveM, 16
 	}
 }
 
@@ -534,11 +628,11 @@ capslock::
 	global allowStartMenu
 	global enableStartMenuOnRelease
 
-	If ((mouseless) && !(GetKeyState("Lalt","p") || GetKeyState("Ralt","p"))) && !altmode {
+	If ((mouseless && mousemode != "set") && !(GetKeyState("Lalt","p") || GetKeyState("Ralt","p"))) && !altmode {
 		Click "Right, Down"
 		KeyWait "d"
 		Click "Right, Up"
-	} Else If (GetKeyState("LWin","p") || GetKeyState("RWin","p")) {
+	} Else If !mouseless && (GetKeyState("LWin","p") || GetKeyState("RWin","p")) {
 		If alttab == "enabledw" {
 			Send "{Escape}"
 			alttab := "half-disabledw"
@@ -554,7 +648,11 @@ capslock::
 		} else {
 			Send "{blind}{d}"
 		}
-
+	} Else If mousemode == "set" {
+		global mousemode
+		MouseMove xShift + xGap * 2, yShift
+		mousemode := "move"
+		SetTimer MoveM, 16
 	}
 }
 
@@ -829,7 +927,13 @@ Ralt Up::{
 
 *SC024::
 {
-	If (GetKeyState("LWin","p")||GetKeyState("RWin","p")) {
+	If ((GetKeyState("Lalt","p") || GetKeyState("Ralt","p"))) {
+		global mouseless
+		global mousemode
+		; Run("test.pyw")
+		mouseless := true
+		mousemode := "set"
+	} Else If (GetKeyState("LWin","p")||GetKeyState("RWin","p")) {
 		global alttab
 		If (alttab == "half-enabledw" || alttab == "half-disabledw" || alttab == "half-enabledt" || alttab == "half-disabledt") {
 			Send "{LAlt Down}"
@@ -845,8 +949,12 @@ Ralt Up::{
 		} else {
 			Send "{blind}{j}"
 		}
-
-	} Else {
+	} Else If mousemode == "set" {
+		global mousemode
+		MouseMove xShift, yShift + yGap * 2
+		mousemode := "move"
+		SetTimer MoveM, 16
+	} Else If mousemode == "move" {
 		global xm
 
 		xm := -1
@@ -960,7 +1068,7 @@ SC0F::
 	If (alttab == "half-enabledt" || alttab == "half-disabledt") {
 		Send "{LAlt Down}"
 		alttab := "enabledt"
-		Send "{RShift Down}{Tab}{RShift Up}"
+		Send "{Tab}"
 	} else {
 		Send "{Rshift Down}{tab}{RShift Up}"
 	}
