@@ -27,8 +27,8 @@ xGap := floor(xGap)
 ;LAlt::return
 ;RAlt::return
 
-^LShift::return
-^RShift::return
+;^LShift::return
+;^RShift::return
 
 ;!SC039::
 ;{
