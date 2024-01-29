@@ -637,6 +637,7 @@ capslock::
 			Send "{Escape}"
 			alttab := "half-disabledw"
 		} Else {
+			run "explorer"
 			Send "{RWin Down}d{RWin Up}"
 			allowStartMenu := False
 			enableStartMenuOnRelease := True
@@ -899,7 +900,7 @@ Lalt Up::{
 	}
 
 	global alttab
-	if (alttab == "enabledt" || alttab == "half-disabledt") {
+	if (alttab == "enabledt" || alttab == "half-enabledt" || alttab == "half-disabledt") {
 		Sleep(25)
 		Send "{LAlt Up}"
 		; Приходится различать "half-" "-enabledt" и "disabledt", потому что не не всегда зажат альт, чтобы его отпускать.
@@ -915,9 +916,9 @@ Ralt Up::{
 	}
 
 	global alttab
-	if (alttab == "enabledt" || alttab == "half-disabledt") {
+	if (alttab == "enabledt" || alttab == "half-enabledt" || alttab == "half-disabledt") {
 		Sleep(25)
-		Send "{LAlt Up}"
+		Send "{RAlt Up}"
 		; Приходится различать "half-" "-enabledt" и "disabledt", потому что не не всегда зажат альт, чтобы его отпускать.
 		alttab := "none"
 	}
@@ -980,6 +981,8 @@ Ralt Up::{
 		Send "{Backspace}"
 	} Else If ((GetKeyState("LWin","p") || GetKeyState("RWin","p"))) {
 		Run "explorer"
+		allowStartMenu := False
+		enableStartMenuOnRelease := True
 	} Else If (mouseless) {
 		While GetKeyState("e","p") {
 			click "WD"	
