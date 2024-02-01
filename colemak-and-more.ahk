@@ -637,10 +637,10 @@ capslock::
 			Send "{Escape}"
 			alttab := "half-disabledw"
 		} Else {
-			run "explorer"
 			Send "{RWin Down}d{RWin Up}"
 			allowStartMenu := False
 			enableStartMenuOnRelease := True
+			alttab := "none"
 		}
 	} Else If !mouseless
 	{
