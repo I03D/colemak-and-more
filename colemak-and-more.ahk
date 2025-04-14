@@ -382,6 +382,30 @@ SC03E::{
 		}
 	}
 }
+
+
+
+XButton1:: {
+    Send("{WheelDown}")
+    While GetKeyState("XButton1", "P") {
+        Sleep(50)
+        Send("{WheelDown}")
+    }
+}
+
+XButton2:: {
+    Send("{WheelUp}")
+    While GetKeyState("XButton2", "P") {
+        Sleep(50)
+        Send("{WheelUp}")
+    }
+}
+
+
+
+
+
+
 *SC017::{
 	If ((GetKeyState("Lalt","p") || GetKeyState("Ralt","p"))) && !altmode {
 		Send "{blind}{Down}"
