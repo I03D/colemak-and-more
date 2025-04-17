@@ -388,10 +388,6 @@ SC03E::{
 XButton1:: {
     Send("{WheelDown}")
 
-    If GetKeyState("XButton2","p") {
-        Send "{MButton}"
-    }
-
     While GetKeyState("XButton1", "P") {
         Sleep(50)
         Send("{WheelDown}")
@@ -400,10 +396,6 @@ XButton1:: {
 
 XButton2:: {
     Send("{WheelUp}")
-
-    If GetKeyState("XButton1","p") {
-        Send "{MButton}"
-    }
 
     While GetKeyState("XButton2", "P") {
         Sleep(50)
