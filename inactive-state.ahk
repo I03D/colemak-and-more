@@ -10,7 +10,11 @@ TraySetIcon("inactive.ico")
 			path := fromFile
 			Run path
 			ExitApp
+
 		}
+	}
+	else {
+		Send "{blind}{s}"
 	}
 }
 

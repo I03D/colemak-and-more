@@ -180,17 +180,12 @@ WhatToUse := IniRead(iniPath, "Inactive-state", "WhatToUse", "")
 	If ((GetKeyState("LAlt","p") || GetKeyState("RAlt","p"))) && !altmode {
 		If ((GetKeyState("RWin","p") || GetKeyState("LWin","p"))) {
 			;Suspend
-			if (WhatToUse = "inactive-state.ahk") {
+			if (WhatToUse != "") {
 				scriptToRun := A_ScriptDir . "\inactive-state.ahk"
-			} else if (WhatToUse = "inactive-state.exe") {
-				scriptToRun := A_ScriptDir . "\inactive-state.exe"
-			}
-			if (FileExist(scriptToRun)) {
 				Run(scriptToRun)
-				ExitApp	
+				ExitApp
 			} else {
-				MsgBox "inactive-state.ahk (или inactive-state.exe) not found in " . A_ScriptDir
-				Suspend()
+				Suspend
 			}
 		} Else {
 			MsgBox("Close / Press Ok to reload...")
