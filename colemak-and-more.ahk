@@ -2,6 +2,8 @@
 
 CoordMode "Mouse", "Screen"
 
+TraySetIcon("icon.ico")
+
 layout := "en_col"
 alttab := "none"
 altmode := False
@@ -165,13 +167,31 @@ MoveM() {
 		SetTimer MoveM, 16
 	}
 }
+
+iniPath := A_ScriptDir . "\config.ini"
+WhatToUse := IniRead(iniPath, "Inactive-state", "WhatToUse", "")
+
+
+
 *SC01F::{
 	global alttab
 	global mouseless
 
 	If ((GetKeyState("LAlt","p") || GetKeyState("RAlt","p"))) && !altmode {
 		If ((GetKeyState("RWin","p") || GetKeyState("LWin","p"))) {
-			Suspend
+			;Suspend
+			if (WhatToUse = "inactive-state.ahk") {
+				scriptToRun := A_ScriptDir . "\inactive-state.ahk"
+			} else if (WhatToUse = "inactive-state.exe") {
+				scriptToRun := A_ScriptDir . "\inactive-state.exe"
+			}
+			if (FileExist(scriptToRun)) {
+				Run(scriptToRun)
+				ExitApp	
+			} else {
+				MsgBox "inactive-state.ahk (или inactive-state.exe) not found in " . A_ScriptDir
+				Suspend()
+			}
 		} Else {
 			MsgBox("Close / Press Ok to reload...")
 			Reload
