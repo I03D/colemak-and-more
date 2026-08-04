@@ -97,7 +97,7 @@ MoveM() {
 		allowStartMenu := False
 	} Else If !mouseless
 	{
-		Send "{blind}{SC035}"
+		Send "{blind}{/}"
 	} Else If mousemode == "set" {
 		global mousemode
 		MouseMove xShift, yShift + yGap * 3
@@ -219,7 +219,7 @@ WhatToUse := IniRead(iniPath, "Inactive-state", "WhatToUse", "")
 		Send "{blind}{Enter}"
 	} Else If !mouseless
 	{
-		Send "{blind}{SC028}"
+		Send "{blind}{\}"
 	}
 }
 SC03E::{
@@ -238,7 +238,7 @@ SC03E::{
 			Send "{Escape}"
 			alttab := "half-disabledw"
 		} Else {
-			Send "{RWin Down}{SC025}{RWin Up}"
+			Send "{RWin Down}{k}{RWin Up}"
 		}
 	} Else If !mouseless
 	{
@@ -339,28 +339,28 @@ SC03E::{
 	If ((GetKeyState("Lalt","p") || GetKeyState("Ralt","p"))) && !altmode {
 		Send "{blind}{home}"
 	} else {
-		Send "{blind}{SC009}"
+		Send "{blind}{8}"
 	}
 }
 *SC00C::{
 	If ((GetKeyState("Lalt","p") || GetKeyState("Ralt","p"))) && !altmode {
 		Send "{blind}{end}"
 	} else {
-		Send "{blind}{SC00C}"
+		Send "{blind}{-}"
 	}
 }
 *SC00A::{
 	If ((GetKeyState("Lalt","p") || GetKeyState("Ralt","p"))) && !altmode {
 		Send "{blind}{pgDn}"
 	} else {
-		Send "{blind}{SC00A}"
+		Send "{blind}{9}"
 	}
 }
 *SC00B::{
 	If ((GetKeyState("Lalt","p") || GetKeyState("Ralt","p"))) && !altmode {
 		Send "{blind}{pgUp}"
 	} else {
-		Send "{blind}{SC00B}"
+		Send "{blind}{0}"
 	}
 }
 
@@ -376,7 +376,7 @@ SC03E::{
 		}
 	} Else If !mouseless
 	{
-		Send "{blind}{SC33}"
+		Send "{blind}{,}"
 	} Else If mousemode == "set" {
 		global mousemode
 		MouseMove xShift + xGap * 2, yShift + yGap * 3
@@ -489,7 +489,7 @@ XButton2:: {
 		en_layout()
 	} Else If !mouseless
 	{
-		Send "{blind}{SC034}"
+		Send "{blind}{.}"
 	} Else If mousemode == "set" {
 		global mousemode
 		MouseMove xShift + xGap, yShift + yGap * 3
@@ -543,11 +543,12 @@ XButton2:: {
 		global mouseless
 		mouseless := False
 		rus_layout()
+		;MsgBox("test")
 	} Else If !mouseless {
 		If (layout == "en_col") {
 			Send "{blind}o"
 		} else {
-			Send "{blind}{SC027}"
+			Send "{blind}{;}"
 		}
 	} Else If mousemode == "set" {
 		global mousemode
@@ -588,7 +589,7 @@ capslock::
 		global speed
 		speed := 5
 	} Else If !mouseless {
-		Send "{blind}{SC01E}"
+		Send "{blind}{a}"
 	} Else If mousemode == "set" {
 		global mousemode
 		MouseMove xShift, yShift
@@ -719,21 +720,29 @@ capslock::
 
 rus_layout() {
 	global layout
-	Send "{Ralt Down}{Shift}{Ralt Up}"
+	if layout != "ru" {
+		Send "{Ralt Down}{Shift}{Ralt Up}"
+		Send "{Lalt Down}{Shift}{Lalt Up}"
+	}
 	layout := "ru"
 }
 
 en_col_layout() {
 	global layout
-	Send "{Ralt Down}{Shift}{Ralt Up}"
-	Send "{Lalt Down}{Shift}{Lalt Up}"
+	if layout == "ru" {
+		Send "{Ralt Down}{Shift}{Ralt Up}"
+		Send "{Lalt Down}{Shift}{Lalt Up}"
+	}
 	layout := "en_col"
 }
 
 en_layout() {
 	global layout
-	Send "{Ralt Down}{Shift}{Ralt Up}"
-	Send "{Lalt Down}{Shift}{Lalt Up}"
+	if layout == "ru" {
+		Send "{Ralt Down}{Shift}{Ralt Up}"
+		Send "{Lalt Down}{Shift}{Lalt Up}"
+	}
+
 	layout := "en"
 }
 
