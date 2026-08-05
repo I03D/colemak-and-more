@@ -1,0 +1,2 @@
+try WinClose("lettersOverlay.pyw")
+
