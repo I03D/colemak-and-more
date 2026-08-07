@@ -4,7 +4,12 @@ CoordMode "Mouse", "Screen"
 
 TraySetIcon("icon.ico")
 
-Run("lettersOverlay.pyw")
+If !WinExist("pythonw") {
+	Run("lettersOverlay.pyw")
+}
+
+config := A_ScriptDir . "\config.ini"
+IniWrite("", config, "LettersOverlay", "Message")
 
 layout := "en_col"
 alttab := "none"
@@ -105,7 +110,7 @@ MoveM() {
 		MouseMove xShift, yShift + yGap * 3
 		mousemode := "move"
 		SetTimer MoveM, 16
-		WinMinimize("lettersOverlay.pyw")
+		WinMinimize("pythonw")
 	}
 }
 *SC02C::{
@@ -126,7 +131,7 @@ MoveM() {
 		MouseMove xShift + xGap * 3, yShift + yGap
 		mousemode := "move"
 		SetTimer MoveM, 16
-		WinMinimize("lettersOverlay.pyw")
+		WinMinimize("pythonw")
 	}
 }
 *SC02C Up::{
@@ -152,7 +157,7 @@ MoveM() {
 		MouseMove xShift + xGap * 2, yShift + yGap
 		mousemode := "move"
 		SetTimer MoveM, 16
-		WinMinimize("lettersOverlay.pyw")
+		WinMinimize("pythonw")
 	}
 }
 *SC02E::{
@@ -170,12 +175,11 @@ MoveM() {
 		MouseMove xShift + xGap, yShift + yGap
 		mousemode := "move"
 		SetTimer MoveM, 16
-		WinMinimize("lettersOverlay.pyw")
+		WinMinimize("pythonw")
 	}
 }
 
-iniPath := A_ScriptDir . "\config.ini"
-WhatToUse := IniRead(iniPath, "Inactive-state", "WhatToUse", "")
+WhatToUse := IniRead(config, "Inactive-state", "WhatToUse", "")
 
 
 
@@ -189,8 +193,12 @@ WhatToUse := IniRead(iniPath, "Inactive-state", "WhatToUse", "")
 			if (WhatToUse != "") {
 				scriptToRun := A_ScriptDir . "\inactive-state.ahk"
 				Run(scriptToRun)
+				IniWrite("Inactive", config, "LettersOverlay", "Message")
+				WinActivate("pythonw")
 				ExitApp
 			} else {
+				IniWrite("Suspend", config, "LettersOverlay", "Message")
+				WinActivate("pythonw")
 				Suspend
 			}
 		} Else {
@@ -200,7 +208,7 @@ WhatToUse := IniRead(iniPath, "Inactive-state", "WhatToUse", "")
 	} Else If ((mouseless) && !(GetKeyState("Lalt","p") || GetKeyState("Ralt","p"))) && !altmode {
 		If mouseless && mousemode != "set"{
 			mouseless := false
-			WinMinimize("lettersOverlay.pyw")
+			WinMinimize("pythonw")
 		}
 	} Else If alttab == "enabledw" && !mouseless{
 		Send "{Escape}"
@@ -218,7 +226,7 @@ WhatToUse := IniRead(iniPath, "Inactive-state", "WhatToUse", "")
 		MouseMove xShift + xGap, yShift
 		mousemode := "move"
 		SetTimer MoveM, 16
-		WinMinimize("lettersOverlay.pyw")
+		WinMinimize("pythonw")
 	}
 }
 
@@ -260,7 +268,7 @@ SC03E::{
 		MouseMove xShift + xGap, yShift + yGap * 2
 		mousemode := "move"
 		SetTimer MoveM, 16
-		WinMinimize("lettersOverlay.pyw")
+		WinMinimize("pythonw")
 	} Else If mousemode == "move" {
 		global ym
 
@@ -341,7 +349,7 @@ SC03E::{
 		MouseMove xShift + xGap * 3, yShift + yGap * 3
 		mousemode := "move"
 		SetTimer MoveM, 16
-		WinMinimize("lettersOverlay.pyw")
+		WinMinimize("pythonw")
 	}
 }
 
@@ -392,7 +400,7 @@ SC03E::{
 		MouseMove xShift + xGap * 2, yShift + yGap * 3
 		mousemode := "move"
 		SetTimer MoveM, 16
-		WinMinimize("lettersOverlay.pyw")
+		WinMinimize("pythonw")
 	}
 }
 
@@ -506,7 +514,7 @@ XButton2:: {
 		MouseMove xShift + xGap, yShift + yGap * 3
 		mousemode := "move"
 		SetTimer MoveM, 16
-		WinMinimize("lettersOverlay.pyw")
+		WinMinimize("pythonw")
 	}
 }
 
@@ -529,7 +537,7 @@ XButton2:: {
 		MouseMove xShift + xGap * 2, yShift + yGap * 2
 		mousemode := "move"
 		SetTimer MoveM, 16
-		WinMinimize("lettersOverlay.pyw")
+		WinMinimize("pythonw")
 	} Else If mousemode == "move" {
 		global ym
 
@@ -568,7 +576,7 @@ XButton2:: {
 		MouseMove xShift + xGap * 3, yShift + yGap * 2
 		mousemode := "move"
 		SetTimer MoveM, 16
-		WinMinimize("lettersOverlay.pyw")
+		WinMinimize("pythonw")
 	} Else If mousemode == "move" {
 		global xm
 
@@ -609,7 +617,7 @@ capslock::
 		MouseMove xShift, yShift
 		mousemode := "move"
 		SetTimer MoveM, 16
-		WinMinimize("lettersOverlay.pyw")
+		WinMinimize("pythonw")
 	}
 }
 
@@ -674,7 +682,7 @@ capslock::
 		MouseMove xShift + xGap * 3, yShift
 		mousemode := "move"
 		SetTimer MoveM, 16
-		WinMinimize("lettersOverlay.pyw")
+		WinMinimize("pythonw")
 	}
 }
 
@@ -694,7 +702,7 @@ capslock::
 		MouseMove xShift, yShift + yGap
 		mousemode := "move"
 		SetTimer MoveM, 16
-		WinMinimize("lettersOverlay.pyw")
+		WinMinimize("pythonw")
 	}
 }
 
@@ -730,7 +738,7 @@ capslock::
 		MouseMove xShift + xGap * 2, yShift
 		mousemode := "move"
 		SetTimer MoveM, 16
-		WinMinimize("lettersOverlay.pyw")
+		WinMinimize("pythonw")
 	}
 }
 
@@ -1016,7 +1024,7 @@ Ralt Up::{
 	If ((GetKeyState("Lalt","p") || GetKeyState("Ralt","p"))) {
 		global mouseless
 		global mousemode
-		WinActivate("lettersOverlay.pyw")
+		WinActivate("pythonw")
 		mouseless := true
 		mousemode := "set"
 	} Else If (GetKeyState("LWin","p")||GetKeyState("RWin","p")) {
@@ -1040,7 +1048,7 @@ Ralt Up::{
 		MouseMove xShift, yShift + yGap * 2
 		mousemode := "move"
 		SetTimer MoveM, 16
-		WinMinimize("lettersOverlay.pyw")
+		WinMinimize("pythonw")
 	} Else If mousemode == "move" {
 		global xm
 

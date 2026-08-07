@@ -20,12 +20,15 @@ TraySetIcon("inactive.ico")
 
 #!SC01F::
 {
+	config := A_ScriptDir . "\config.ini"
 	If GetKeyState("s","p") {
 		iniPath := A_ScriptDir "\config.ini"
 		fromFile := IniRead(iniPath, "Inactive-state", "From", "")
 
 		path := fromFile
 		Run path
+		IniWrite("Activated AHK", config, "LettersOverlay", "Message")
+		WinActivate("pythonw")
 		ExitApp
 	}
 	else {
